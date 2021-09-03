@@ -53,7 +53,7 @@ class NutterCLI(object):
         self,
         test_pattern,
         cluster_id,
-        notebook_params={},
+        notebook_params=None,
         timeout=120,
         junit_report=False,
         tags_report=False,
@@ -64,10 +64,11 @@ class NutterCLI(object):
         try:
             logging.debug(
                 """ Running tests. test_pattern: {} cluster_id: {} timeout: {}
-                               junit_report: {} max_parallel_tests: {}
+                               notebook_params: {} junit_report: {} max_parallel_tests: {}
                                tags_report: {}  recursive:{} """.format(
                     test_pattern,
                     cluster_id,
+                    notebook_params,
                     timeout,
                     junit_report,
                     max_parallel_tests,
@@ -87,6 +88,7 @@ class NutterCLI(object):
                     max_parallel_tests,
                     recursive,
                     poll_wait_time,
+                    notebook_params=notebook_params,
                 )
                 self._nutter.events_processor_wait()
                 self._handle_results(results, junit_report, tags_report)
@@ -94,7 +96,11 @@ class NutterCLI(object):
 
             logging.debug("Executing single test")
             result = self._nutter.run_test(
-                test_pattern, cluster_id, timeout, poll_wait_time
+                test_pattern,
+                cluster_id,
+                timeout,
+                poll_wait_time,
+                notebook_params=notebook_params,
             )
 
             self._handle_results([result], junit_report, tags_report)
